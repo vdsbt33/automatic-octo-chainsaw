@@ -1,24 +1,26 @@
 const Habit = require('../models/Habit');
+const mysql = require('mysql');
+const dbconnection = require('../models/dbconnection');
+const util = require('util');
 
 module.exports = {
-  async index(req, res) {
-
-  },
 
   async store(req, res) {
-    console.log('req.json: ' + req + '\nreq.body: ' + req.body);
     const { kha_name, kha_descri, kha_streak, kha_crdate, kha_eddate } = req.body;
+    const query = 'insert into hab_keyhab ( kha_name, kha_descri, kha_streak, kha_crdate, kha_eddate ) values ("?", "?", ?, \'?\', ?)';
     
-    const habit = await Habit(
-      kha_name,
-      kha_descri,
-      kha_streak,
-      kha_crdate,
-      kha_eddate
-    );
+    const habit = new Habit(kha_name, kha_descri, kha_streak, kha_crdate, kha_eddate);
 
-    print('name: ' + habit.kha_name);
-      
-    return res.json(habit);
+    dbconnection.connect();
+
+    // console.log('kha_crdate.toISOString(): ' + habit.kha_crdate() + ' / kha_eddate.toISOString(): ' + habit.kha_eddate());
+    dbconnection.query(query, [[habit.kha_name(), habit.kha_descri(), habit.kha_streak(), habit.kha_crdate(), habit.kha_eddate()]], function(err, result) {
+      if (err) throw err;
+      console.log("Item inserted");
+    });
+    
+    dbconnection.end();
+
+    return res.json(habit.getModel());
   }
 };

@@ -6,9 +6,11 @@ const express = require('express'),
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+
 const routes = new express.Router();
 const HabitController = require('./controllers/HabitController');
 
+app.post('/habit', HabitController.store);
 /*
 middleware is a function that always receive [req, res]
 An interceptor of requests
@@ -18,12 +20,12 @@ res = response
 */
 
 
-routes.get('/', (req, res) => {
-  return res.send(`Hello ${req.query.name}`);
-});
+// routes.get('/', (req, res) => {
+//   return res.send(`Hello ${req.query.name}`);
+// });
 
-routes.post('/habit', HabitController.store);
+// routes.post('/habit', HabitController.store);
 
 
 
-module.exports = routes;
+module.exports = app;

@@ -14,5 +14,4 @@ if (port === 3333) {
 
 }
 
-connection.connect();
 module.exports = connection;
