@@ -10,6 +10,7 @@ app.use(bodyParser.json());
 const routes = new express.Router();
 const HabitController = require('./controllers/HabitController');
 
+app.get('/habits', HabitController.getAll);
 app.post('/habit', HabitController.store);
 /*
 middleware is a function that always receive [req, res]

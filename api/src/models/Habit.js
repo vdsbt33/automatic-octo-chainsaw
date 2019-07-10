@@ -25,9 +25,9 @@ const HabitModel = {
 };
 
 /* Constructor */
-function Habit(kha_name, kha_descri, kha_streak, kha_crdate, kha_eddate)
+function Habit(kha_identi, kha_name, kha_descri, kha_streak, kha_crdate, kha_eddate)
 {
-  HabitModel.kha_identi = null;
+  HabitModel.kha_identi = kha_identi != undefined ? kha_identi : undefined;
   HabitModel.kha_name = kha_name != undefined ? kha_name : undefined;
   HabitModel.kha_descri = kha_descri != undefined ? kha_descri : '',
   HabitModel.kha_streak = kha_streak != undefined ? kha_streak : 0;
