@@ -33,11 +33,11 @@ function Habit(kha_identi, kha_name, kha_descri, kha_streak, kha_crdate, kha_edd
 {
   HabitModel.kha_identi = kha_identi != undefined ? kha_identi : undefined;
   HabitModel.kha_name = kha_name != undefined ? kha_name : undefined;
-  HabitModel.kha_descri = kha_descri != undefined ? kha_descri : '',
+  HabitModel.kha_descri = kha_descri != undefined ? kha_descri : undefined,
   HabitModel.kha_streak = kha_streak != undefined ? kha_streak : undefined;
   HabitModel.kha_crdate = kha_crdate != undefined ? kha_crdate : new Date();
   HabitModel.kha_eddate = kha_eddate != undefined ? kha_eddate : undefined;
-  HabitModel.kha_active = kha_active != undefined ? kha_active : true;
+  HabitModel.kha_active = kha_active != undefined ? kha_active : undefined;
 }
 
 // function Habit(kha_name, kha_descri, kha_streak, kha_crdate, kha_eddate, kha_active)

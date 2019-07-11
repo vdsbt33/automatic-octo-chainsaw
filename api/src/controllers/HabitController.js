@@ -21,7 +21,7 @@ var getValues = function(req) {
   if (req.query.eddateEnd !== undefined)
     result.push({"property": "eddate", "type": "dateEnd", "value": req.query.eddateEnd});
 
-  if (req.query.active !== undefined)
+  if (req.query.active !== undefined && req.query.active !== '')
     result.push({"property": "active", "type": "bool", "value": req.query.active});
 
   return result;
@@ -42,15 +42,15 @@ var getHabit_where = function(req){
   for (var i = 0; i < valueList.length; i++) {
     if (i == 0) {
       query += 'where ';
-    } else if (i < valueList.length - 1) {
-      query += 'and ';
+    } else if (i < valueList.length) {
+      query += ' and ';
     }
 
     if (valueList[i].type === 'int'){
-      query += `kha_${valueList[i].property} = ${valueList[i].value}`
+      query += `kha_${valueList[i].property} = ${valueList[i].value}`;
     }
     else if (valueList[i].type === 'string') {
-      query += `kha_${valueList[i].property} like "%${valueList[i].value}%"`
+      query += `kha_${valueList[i].property} like "%${valueList[i].value}%"`;
     } else if (valueList[i].type === 'dateStart') {
       /* Date > */
       if (valueList[i].property === 'crdate')
@@ -87,14 +87,19 @@ var putHabit_values = function(habit) {
   var query = '';
   var valueList = [];
 
-  valueList.push({"property": "kha_name", "type": "string", "value": habit.kha_name()});
-  valueList.push({"property": "kha_descri", "type": "string", "value": habit.kha_descri()});
+  if (habit.kha_name() !== undefined)
+    valueList.push({"property": "kha_name", "type": "string", "value": habit.kha_name()});
+  if (habit.kha_descri() !== undefined)
+    valueList.push({"property": "kha_descri", "type": "string", "value": habit.kha_descri()});
   if (habit.kha_streak() !== undefined)
     valueList.push({"property": "kha_streak", "type": "int", "value": habit.kha_streak()});
   if (habit.kha_eddate() !== undefined)
     valueList.push({"property": "kha_eddate", "type": "date", "value": habit.kha_eddate()});
-  valueList.push({"property": "kha_active", "type": "bool", "value": habit.kha_active()});
+  if (habit.kha_active() !== undefined)
+    valueList.push({"property": "kha_active", "type": "bool", "value": habit.kha_active()});
 
+  if (valueList.length == 0)
+    return undefined;
 
   console.log(`valueList.length == ${valueList.length}`);
   for (var i = 0; i < valueList.length; i++) {
@@ -115,7 +120,7 @@ module.exports = {
     var query = 'select kha_identi, kha_name, kha_descri, kha_streak, kha_crdate, kha_eddate, kha_active from hab_keyhab ';
     query += getHabit_where(req);
 
-    console.log('query: ' + query);
+    console.log(`query: '${query}' | active: '${req.query.active}'`);
 
     var objects = [];
 
@@ -160,13 +165,19 @@ module.exports = {
     
     const habit = new Habit(kha_identi, kha_name, kha_descri, kha_streak, undefined, kha_eddate, kha_active);
 
-    const query = `update hab_keyhab set ${putHabit_values(habit)} where kha_identi = ${kha_identi};`;
+    const setValues = putHabit_values(habit);
+
+    if (setValues === undefined)
+      return res.json({"result": "Error. You must insert at least one parameter."});
+
+
+    const query = `update hab_keyhab set ${setValues} where kha_identi = ${kha_identi};`;
 
     console.log(`query = ${query}`);
     conn().query(query, function(err, result) {
       if (err) throw err;
 
-      return res.json({"result": "ok"})
+      return res.json({"result": "ok"});
     });
   },
 
@@ -183,13 +194,15 @@ module.exports = {
     });
   },
   async resetStreak(req, res) {
-    const { kha_identi } = req.params.kha_identi;
+    console.log(`req.params = ${JSON.stringify(req.params)}`);
+    const { kha_identi } = req.params;
     const query = `update hab_keyhab set kha_streak = 0 where kha_identi = ${kha_identi};`;
+    console.log(`query = ${query} (kha_identi = ${kha_identi})`); // where (kha_identi) is undefined
 
     conn().query(query, function(err, result) {
       if (err) throw err;
       
-      return 'ok';
+      return res.json({ "result": "ok"});
     });
   }
 
