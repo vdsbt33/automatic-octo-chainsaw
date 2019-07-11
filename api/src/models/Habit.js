@@ -32,7 +32,17 @@ function Habit(kha_identi, kha_name, kha_descri, kha_streak, kha_crdate, kha_edd
   HabitModel.kha_descri = kha_descri != undefined ? kha_descri : '',
   HabitModel.kha_streak = kha_streak != undefined ? kha_streak : 0;
   HabitModel.kha_crdate = kha_crdate != undefined ? kha_crdate : new Date();
-  HabitModel.kha_eddate = kha_eddate != undefined ? kha_eddate : null;
+  HabitModel.kha_eddate = kha_eddate != undefined ? kha_eddate : undefined;
+}
+
+function Habit(kha_name, kha_descri, kha_streak, kha_crdate, kha_eddate)
+{
+  HabitModel.kha_identi = undefined;
+  HabitModel.kha_name = kha_name != undefined ? kha_name : undefined;
+  HabitModel.kha_descri = kha_descri != undefined ? kha_descri : '',
+  HabitModel.kha_streak = kha_streak != undefined ? kha_streak : 0;
+  HabitModel.kha_crdate = kha_crdate != undefined ? kha_crdate : new Date();
+  HabitModel.kha_eddate = kha_eddate != undefined ? kha_eddate : undefined;
 }
 
 Habit.prototype.getModel = function() {
@@ -56,11 +66,11 @@ Habit.prototype.kha_streak = function() {
 }
 
 Habit.prototype.kha_crdate = function() {
-  return HabitModel.kha_crdate != null ? HabitModel.kha_crdate.toISOString().replace(/T/, ' ').replace(/\..+/, '') : null;
+  return HabitModel.kha_crdate != undefined ? HabitModel.kha_crdate.toISOString().replace(/T/, ' ').replace(/\..+/, '') : undefined;
 }
 
 Habit.prototype.kha_eddate = function() {
-  return HabitModel.kha_eddate != null ? HabitModel.kha_eddate.toISOString().replace(/T/, ' ').replace(/\..+/, '') : null;
+  return HabitModel.kha_eddate != undefined ? HabitModel.kha_eddate.toISOString().replace(/T/, ' ').replace(/\..+/, '') : undefined;
 }
 
 module.exports = Habit;
