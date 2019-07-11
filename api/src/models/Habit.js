@@ -21,29 +21,35 @@ const HabitModel = {
     type: Date,
     default: new Date()
   },
-  kha_eddate: Date
+  kha_eddate: Date,
+  kha_active: {
+    type: Boolean,
+    default: true
+  }
 };
 
 /* Constructor */
-function Habit(kha_identi, kha_name, kha_descri, kha_streak, kha_crdate, kha_eddate)
+function Habit(kha_identi, kha_name, kha_descri, kha_streak, kha_crdate, kha_eddate, kha_active)
 {
   HabitModel.kha_identi = kha_identi != undefined ? kha_identi : undefined;
   HabitModel.kha_name = kha_name != undefined ? kha_name : undefined;
   HabitModel.kha_descri = kha_descri != undefined ? kha_descri : '',
-  HabitModel.kha_streak = kha_streak != undefined ? kha_streak : 0;
+  HabitModel.kha_streak = kha_streak != undefined ? kha_streak : undefined;
   HabitModel.kha_crdate = kha_crdate != undefined ? kha_crdate : new Date();
   HabitModel.kha_eddate = kha_eddate != undefined ? kha_eddate : undefined;
+  HabitModel.kha_active = kha_active != undefined ? kha_active : true;
 }
 
-function Habit(kha_name, kha_descri, kha_streak, kha_crdate, kha_eddate)
-{
-  HabitModel.kha_identi = undefined;
-  HabitModel.kha_name = kha_name != undefined ? kha_name : undefined;
-  HabitModel.kha_descri = kha_descri != undefined ? kha_descri : '',
-  HabitModel.kha_streak = kha_streak != undefined ? kha_streak : 0;
-  HabitModel.kha_crdate = kha_crdate != undefined ? kha_crdate : new Date();
-  HabitModel.kha_eddate = kha_eddate != undefined ? kha_eddate : undefined;
-}
+// function Habit(kha_name, kha_descri, kha_streak, kha_crdate, kha_eddate, kha_active)
+// {
+//   HabitModel.kha_identi = undefined;
+//   HabitModel.kha_name = kha_name != undefined ? kha_name : undefined;
+//   HabitModel.kha_descri = kha_descri != undefined ? kha_descri : '',
+//   HabitModel.kha_streak = kha_streak != undefined ? kha_streak : 0;
+//   HabitModel.kha_crdate = kha_crdate != undefined ? kha_crdate : new Date();
+//   HabitModel.kha_eddate = kha_eddate != undefined ? kha_eddate : undefined;
+//   HabitModel.kha_active = kha_active != undefined ? kha_active : true;
+// }
 
 Habit.prototype.getModel = function() {
   return HabitModel;
@@ -71,6 +77,10 @@ Habit.prototype.kha_crdate = function() {
 
 Habit.prototype.kha_eddate = function() {
   return HabitModel.kha_eddate != undefined ? HabitModel.kha_eddate.toISOString().replace(/T/, ' ').replace(/\..+/, '') : undefined;
+}
+
+Habit.prototype.kha_active = function() {
+  return HabitModel.kha_active;
 }
 
 module.exports = Habit;

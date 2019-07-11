@@ -11,8 +11,11 @@ const routes = new express.Router();
 const HabitController = require('./controllers/HabitController');
 
 // app.get('/habits', HabitController.getAll);
-app.get('/habit/get', HabitController.get);
-app.post('/habit/post', HabitController.post);
+app.get('/habit/get', HabitController.getHabit);
+app.post('/habit/post', HabitController.postHabit);
+app.put('/habit/put', HabitController.putHabit);
+app.put('/habit/streak/add/:kha_identi', HabitController.addStreak);
+app.put('/habit/streak/reset/:kha_identi', HabitController.resetStreak);
 
 /*
 middleware is a function that always receive [req, res]
