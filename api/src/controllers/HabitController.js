@@ -1,7 +1,11 @@
 const Habit = require('../models/Habit');
 var conn = require('../models/dbconnection');
-const util = require('util');
 
+/*
+ Gets each value of a Habit
+ object and saves them as
+ structured objects
+ */
 var getValues = function(req) {
   var result = [];
   if (req.query.identi !== undefined)
@@ -27,6 +31,11 @@ var getValues = function(req) {
   return result;
 }
 
+/*
+Gets the value of a Habit object
+in a list according to it's property
+name and type
+*/
 var getValue = function(arrayList, property, type) {
   for (var i = 0; i < arrayList.length; i++) {
     if (arrayList[i].property === property && arrayList[i].type === type) {
@@ -35,7 +44,10 @@ var getValue = function(arrayList, property, type) {
   }
 }
 
-/* Builds the where conditions of the GET (Habit) */
+/*
+Builds the where conditions
+of the GET (Habit)
+*/
 var getHabit_where = function(req){
   var query = '';
   var valueList = getValues(req);
@@ -73,16 +85,22 @@ var getHabit_where = function(req){
   return query;
 }
 
-/* Builds the where conditions of the POST (Habit) */
+/*
+Builds the VALUES section
+of the POST (Habit) query
+*/
 var postHabit_values = function(habit) {
   var query = '';
   
-  query += `"${habit.kha_name()}", "${habit.kha_descri()}", ${habit.kha_streak()}, '${habit.kha_crdate()}' ${habit.kha_eddate() === undefined ? '' : ", '" + habit.kha_eddate() + "'"}, ${habit.kha_active()}`;
+  query += `"${habit.kha_name()}", "${habit.kha_descri()}", ${habit.kha_streak()}, '${habit.kha_crdate()}', ${habit.kha_active() !== undefined ? habit.kha_active() : true}`;
 
   return query;
 }
 
-/* */
+/*
+Builds the VALUES section
+of the PUT (Habit) query
+*/
 var putHabit_values = function(habit) {
   var query = '';
   var valueList = [];
@@ -103,11 +121,13 @@ var putHabit_values = function(habit) {
 
   console.log(`valueList.length == ${valueList.length}`);
   for (var i = 0; i < valueList.length; i++) {
-    if (i != 0 && i < valueList.length - 1)
+    if (i != 0 && i < valueList.length)
       query += ',';
 
     if (valueList[i].type == 'string' || valueList[i].type == 'date')
       query += `${valueList[i].property} = '${valueList[i].value}'`;
+    else
+      query += `${valueList[i].property} = ${valueList[i].value}`;
   }
   
   return query;
@@ -115,10 +135,15 @@ var putHabit_values = function(habit) {
 
 module.exports = {
 
+  /*
+  Route /habit/get
+  */
   async getHabit(req, res) {
+    const { kha_identi, kha_name, kha_descri, kha_streak, kha_crdate, kha_eddate, kha_active } = req.body;
+    const habit = new Habit(kha_identi, kha_name, kha_descri, kha_streak, undefined, undefined, kha_active);
 
     var query = 'select kha_identi, kha_name, kha_descri, kha_streak, kha_crdate, kha_eddate, kha_active from hab_keyhab ';
-    query += getHabit_where(req);
+    query += getHabit_where(req) + ' order by kha_identi desc';
 
     console.log(`query: '${query}' | active: '${req.query.active}'`);
 
@@ -143,6 +168,9 @@ module.exports = {
     // return res.json(objects);
   },
 
+  /*
+  Route /habit/post
+  */
   async postHabit(req, res) {
     const { kha_identi, kha_name, kha_descri, kha_streak, kha_eddate, kha_active } = req.body;
     const habit = new Habit(kha_identi, kha_name, kha_descri, kha_streak, undefined, undefined, kha_active);
@@ -160,10 +188,13 @@ module.exports = {
 
   },
   
+  /*
+  Route /habit/put
+  */
   async putHabit(req, res) {
-    const { kha_identi, kha_name, kha_descri, kha_streak, kha_eddate, kha_active } = req.body;
+    const { kha_identi, kha_name, kha_descri, kha_streak, kha_crdate, kha_eddate, kha_active } = req.body;
     
-    const habit = new Habit(kha_identi, kha_name, kha_descri, kha_streak, undefined, kha_eddate, kha_active);
+    const habit = new Habit(kha_identi, kha_name, kha_descri, kha_streak, undefined, new Date(), kha_active);
 
     const setValues = putHabit_values(habit);
 
@@ -177,10 +208,13 @@ module.exports = {
     conn().query(query, function(err, result) {
       if (err) throw err;
 
-      return res.json({"result": "ok"});
+      return res.json(habit.getModel());
     });
   },
 
+  /*
+  Route /habit/streak/add/:kha_identi
+  */
   async addStreak(req, res) {
     console.log(`req.params = ${JSON.stringify(req.params)}`);
     const { kha_identi } = req.params;
@@ -193,6 +227,10 @@ module.exports = {
       return res.json({ "result": "ok"});
     });
   },
+
+  /*
+  Route /habit/streak/reset/:kha_identi
+  */
   async resetStreak(req, res) {
     console.log(`req.params = ${JSON.stringify(req.params)}`);
     const { kha_identi } = req.params;

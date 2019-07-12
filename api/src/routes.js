@@ -9,6 +9,7 @@ app.use(bodyParser.json());
 
 const routes = new express.Router();
 const HabitController = require('./controllers/HabitController');
+const HabitLogController = require('./controllers/HabitLogController');
 
 // app.get('/habits', HabitController.getAll);
 app.get('/habit/get', HabitController.getHabit);
@@ -17,6 +18,9 @@ app.put('/habit/put', HabitController.putHabit);
 app.put('/habit/streak/add/:kha_identi', HabitController.addStreak);
 app.put('/habit/streak/reset/:kha_identi', HabitController.resetStreak);
 
+app.get('/habit/log/get', HabitLogController.getLog);
+app.post('/habit/log/post', HabitLogController.postLog);
+// app.get('/habit/log/post', );
 /*
 middleware is a function that always receive [req, res]
 An interceptor of requests
