@@ -113,7 +113,14 @@ module.exports = {
   */
  async postLog(req, res) {
    //stl_identi, stl_kha_identi, stl_action, stl_streak, stl_crdate from hab_strlog
-    const { stl_kha_identi, stl_action, stl_streak } = req.body;
+    var { stl_kha_identi, stl_action, stl_streak } = req.body;
+    conn().query(`select stl_streak from hab_strlog where stl_kha_identi = ${stl_kha_identi} order by stl_identi desc limit 1;`, function(err, result) {
+      if (err) throw err;
+      stl_streak = result[0];
+    });
+
+    /* Gets the old value */
+    
     const log = new HabitLog(undefined, stl_kha_identi, stl_action, stl_streak, undefined);
 
     const query = `insert into hab_strlog ( stl_kha_identi, stl_action, stl_streak, stl_crdate ) values ( ${postLog_values(log)} );`;
