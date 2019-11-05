@@ -9,7 +9,7 @@
   "dependencies": {
     "connect": "^3.7.0",
     "express": "^4.17.1",
-    "mongoose": "^5.6.3",
+    "mongoose": "^5.7.5",
     "multer": "^1.4.1",
     "mysql": "^2.17.1"
   },
